@@ -9,7 +9,7 @@
 #
 define php::extension::xdebug(
   $php,
-  $version = '2.2.1',
+  $version = '2.2.5',
   $config_template = "php/extensions/xdebug.ini.erb"
 ) {
   require php::config
