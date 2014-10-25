@@ -15,6 +15,7 @@ define php::fpm(
   $version = $name,
 ){
   require php::config
+  require php::fpm::config
 
   # Config file locations
   $version_config_root = "${php::config::configdir}/${version}"
@@ -52,8 +53,9 @@ define php::fpm(
     # Listen on a fake socket for now
     $pool_name    = $version
     $socket_path  = "${boxen::config::socketdir}/${version}"
-    $pm           = 'static'
-    $max_children = 1
+    $pm           = $php::fpm::config::pm
+    $max_children = $php::fpm::config::pm_max_children
+    $request_terminate_timeout = $php::fpm::config::request_terminate_timeout
 
     # Additional non required options (as pm = static for this pool):
     $start_servers     = 1

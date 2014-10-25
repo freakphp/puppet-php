@@ -9,7 +9,8 @@
 #
 define php::extension::xdebug(
   $php,
-  $version = '2.2.1'
+  $version = '2.2.1',
+  $config_template = "php/extensions/xdebug.ini.erb"
 ) {
   require php::config
   # Require php version eg. php::5_4_10
@@ -32,12 +33,13 @@ define php::extension::xdebug(
     phpenv_root    => $php::config::root,
     php_version    => $php,
     cache_dir      => $php::config::extensioncachedir,
+    provider       => pecl,
   }
 
   # Add config file once extension is installed
 
-  file { "${php::config::configdir}/${php}/conf.d/${extension}.ini":
-    content => template("php/extensions/${extension}.ini.erb"),
+  file { "${php::config::configdir}/${php}/conf.d/${php::config::configprefix}${extension}.ini":
+    content => template($config_template),
     require => Php_extension[$name],
   }
 

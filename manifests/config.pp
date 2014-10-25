@@ -4,7 +4,9 @@
 #
 #     include php::config
 #
-class php::config {
+class php::config (
+  $webserver = 'nginx',
+) {
   require boxen::config
 
   $root              = "${boxen::config::home}/phpenv"
@@ -14,4 +16,5 @@ class php::config {
   $pluginsdir        = "${root}/plugins"
   $cachedir          = "${php::config::datadir}/cache"
   $extensioncachedir = "${php::config::datadir}/cache/extensions"
+  $configprefix      = "10-"
 }

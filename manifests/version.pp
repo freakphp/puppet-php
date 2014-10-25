@@ -51,7 +51,8 @@ define php::version(
         $version_data_root,
       ]:
       ensure => absent,
-      force  => true
+      force  => true,
+      backup => false
     }
 
   } else {

@@ -159,7 +159,7 @@ ping.path = /ping
 ; does not stop script execution for some reason. A value of '0' means 'off'.
 ; Available units: s(econds)(default), m(inutes), h(ours), or d(ays)
 ; Default Value: 0
-request_terminate_timeout = 3600s
+request_terminate_timeout = <%= @request_terminate_timeout %>
 
 ; The timeout for serving a single request after which a PHP backtrace will be
 ; dumped to the 'slowlog' file. A value of '0s' means 'off'.
@@ -174,12 +174,12 @@ request_terminate_timeout = 3600s
 
 ; Set open file descriptor rlimit.
 ; Default Value: system defined value
-;rlimit_files = 1024
+rlimit_files = 2048
 
 ; Set max core size rlimit.
 ; Possible Values: 'unlimited' or an integer greater or equal to 0
 ; Default Value: system defined value
-;rlimit_core = 0
+rlimit_core = 0
 
 ; Chroot to this directory at the start. This value must be defined as an
 ; absolute path. When this value is not set, chroot is not used.

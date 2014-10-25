@@ -21,7 +21,7 @@ Puppet::Type.newtype(:php_extension) do
   end
 
   newparam(:version) do
-    defaultto '>= 0'
+    defaultto ''
   end
 
   newparam(:package_name) do

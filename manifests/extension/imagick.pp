@@ -9,7 +9,7 @@
 #
 define php::extension::imagick(
   $php,
-  $version = '3.0.0'
+  $version = '3.1.2'
 ) {
   require php::config
   require imagemagick
@@ -41,7 +41,7 @@ define php::extension::imagick(
 
   # Add config file once extension is installed
 
-  file { "${php::config::configdir}/${php}/conf.d/${extension}.ini":
+  file { "${php::config::configdir}/${php}/conf.d/${php::config::configprefix}${extension}.ini":
     content => template('php/extensions/generic.ini.erb'),
     require => Php_extension[$name],
   }

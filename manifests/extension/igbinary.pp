@@ -2,52 +2,41 @@
 #
 # Usage:
 #
-#     php::extension::zmq { 'zmq for 5.4.10':
-#       php     => '5.4.10',
-#       version => '1.0.5'
+#     php::extension::igbinary { 'igbinry for 5.4.10':
+#       php       => '5.4.10',
 #     }
 #
-define php::extension::zmq(
+define php::extension::igbinary(
   $php,
-  $version = '1.0.5'
+  $version = '1.1.1',
 ) {
-  require zeromq
-
   require php::config
-  # Require php version eg. php::5_4_10
+  # Require php version eg. php::5-4-10
   # This will compile, install and set up config dirs if not present
   require join(['php', join(split($php, '[.]'), '_')], '::')
 
-  $extension = 'zmq'
+  $extension = 'igbinary'
+  $package_name = "igbinary-${version}"
+  $url = "http://pecl.php.net/get/igbinary-${version}.tgz"
 
   # Final module install path
   $module_path = "${php::config::root}/versions/${php}/modules/${extension}.so"
 
-  # Clone the source repository
-  repository { "${php::config::extensioncachedir}/zmq":
-    source => 'mkoppanen/php-zmq'
-  }
-
-  # Build & install the extension
   php_extension { $name:
-    provider       => 'git',
-
     extension      => $extension,
     version        => $version,
-
+    package_name   => $package_name,
+    package_url    => $url,
     homebrew_path  => $boxen::config::homebrewdir,
     phpenv_root    => $php::config::root,
     php_version    => $php,
-
     cache_dir      => $php::config::extensioncachedir,
-    require        => Repository["${php::config::extensioncachedir}/zmq"],
   }
 
   # Add config file once extension is installed
 
   file { "${php::config::configdir}/${php}/conf.d/${php::config::configprefix}${extension}.ini":
-    content => template('php/extensions/generic.ini.erb'),
+    content => template("php/extensions/${extension}.ini.erb"),
     require => Php_extension[$name],
   }
-
 }

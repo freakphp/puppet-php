@@ -28,11 +28,23 @@ Puppet::Type.type(:php_extension).provide(:php_source) do
   def destroy
     @resource[:compiled_name] ||= "#{@resource[:extension]}.so"
     FileUtils.rm_rf("#{@resource[:phpenv_root]}/versions/#{@resource[:php_version]}/modules/#{@resource[:extension]}.so")
+    FileUtils.rm_rf("#{@resource[:phpenv_root]}/versions/#{@resource[:php_version]}/modules/#{@resource[:extension]}.version")
   end
 
   def exists?
     @resource[:compiled_name] ||= "#{@resource[:extension]}.so"
-    File.exists?("#{@resource[:phpenv_root]}/versions/#{@resource[:php_version]}/modules/#{@resource[:compiled_name]}")
+    unless File.exists?("#{@resource[:phpenv_root]}/versions/#{@resource[:php_version]}/modules/#{@resource[:compiled_name]}")
+      return false
+    end
+
+    version_file = "#{@resource[:phpenv_root]}/versions/#{@resource[:php_version]}/modules/#{@resource[:extension]}.version"
+    if File.exists?(version_file)
+      file = File.open(version_file)
+      version = file.read.strip
+      return (@resource[:version] == version)
+    end
+
+    return false
   end
 
 protected
@@ -97,6 +109,7 @@ protected
   def install
     %x( cp #{@work_dir}/modules/#{@resource[:compiled_name]} #{@php_version_prefix}/modules/#{@resource[:compiled_name]} )
     raise "Failed to install module #{@resource[:name]}" unless File.exists?("#{@php_version_prefix}/modules/#{@resource[:compiled_name]}")
+    File.open("#{@php_version_prefix}/modules/#{@resource[:extension]}.version", 'w') {|f| f.write(@resource[:version]) }
   end
 
   # Define fully qualified paths to autoconf & autoheader
